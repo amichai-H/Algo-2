@@ -21,12 +21,17 @@ public class Graph {
             System.out.println("dst or src dont exist");
             return;
         }
-        if (EMap.get(src) == null)
-            EMap.put(src, (HashMap<Integer, edge_data>) new LinkedHashMap<>().put(dst,new Edge(src,dst)));
+        if (EMap.get(src) == null) {
+            HashMap<Integer, edge_data> temp = new LinkedHashMap<>();
+            temp.put(dst,new Edge(src,dst));
+            EMap.put(src, temp);
+        }
         else EMap.get(src).put(dst,new Edge(src,dst));
     }
     public Collection<edge_data> getEdges(int id){
-        return EMap.get(id).values();
+        if (EMap.get(id) != null)
+            return EMap.get(id).values();
+        return null;
     }
 
     public int size() {
