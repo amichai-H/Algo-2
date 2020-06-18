@@ -1,7 +1,4 @@
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class BFS {
     private Graph graph;
@@ -15,6 +12,7 @@ public class BFS {
     private Color[] color;
     private int[] d;
     private int[] pi;
+    private Tree tree;
     public BFS(Graph g){
         this.graph = g;
     }
@@ -139,9 +137,80 @@ public class BFS {
         int indexMax = getMaxD(false);
         bfs(indexMax);
         return getMaxD(true);
+    }
+    public List<Integer> path(int src,int dst){
+        bfs(src);
+        if (d[dst] == -1) {
+            System.out.println("no path");
+            return null;
+        }
+        System.out.println("the distance between " + src+" to " + dst + " is  = "+d[dst]);
+        List<Integer> path = new LinkedList<>();
+        int current = dst;
+        while (current != -1){
+            path.add(current);
+            current = pi[current];
+        }
+        return path;
 
 
     }
+    private int findHead() {
+        for (int i=1; i<size;i++){
+            if (graph.getEdges(i)!=null){
+                if (graph.getEdges(i).size()==1)
+                    return i;
+            }
+        }
+        return -1;
+    }
+    public boolean isTree(){
+        if (linksCounter()!=1)
+            return false;
+        return graph.size()-1 == 2*graph.getSizeE();
+    }
+    class Tree{
+        int diameter;
+        int radius;
+        int[] center = new int[2];
+        boolean even;
+    }
+    public boolean fillTree(){
+        int[] handler = new int[size];
+        boolean leftOneOrTow = false;
+        handler[0] = -1;
+        if (!isTree())
+            return false;
+        tree = new Tree();
+        Graph g =new Graph(graph);
+        int sum = 0;
+        boolean even = true;
+        while (!leftOneOrTow){
+            sum++;
+            int left = 0;
+            for (int i=1; i<handler.length;i++){
+                if (handler[i] != -1 && g.isLeaf(i)) {
+                    g.removeNode(i);
+                    handler[i] = -1;
+                }
+                else left++;
+            }
+            leftOneOrTow = left == 1 || left == 2;
+            even = left == 1;
+        }
+        tree.even = even;
+        if (even){
+            tree.radius = sum;
+            tree.diameter = 2*tree.radius;
+        }
+        else {
+            tree.radius = sum+1;
+            tree.diameter = tree.radius*2-1;
+        }
+        return true;
+    }
+
+
 
     public static void main(String [] args){
         Graph g = new Graph();
@@ -153,11 +222,17 @@ public class BFS {
         g.add2Edge(1,5);
         g.add2Edge(1,6);
         g.add2Edge(6,7);
+        //temp
+//        g.add2Edge(3,5);
+//        g.add2Edge(5,6);
 
         BFS bfs1 = new BFS(g);
         System.out.println(bfs1.linksCounter());
         System.out.println("diam = " + bfs1.findDiam()); // (diam = 5) 4--3--2--1--6--7
         System.out.println("diam = " +bfs1.findDiamEfficient() +" but in O(|V+E|)");
+        //temp
+//        System.out.println(bfs1.path(6,3));
+
 
     }
 

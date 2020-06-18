@@ -7,12 +7,25 @@ public class Graph {
     private int id = 1;
     private HashMap<Integer, node_data> NMap = new LinkedHashMap<>();
     private HashMap<Integer,HashMap<Integer, edge_data>> EMap = new LinkedHashMap<>();
+    private int sizeE = 0;
+    public Graph(){}
+    public Graph(Graph copy){
+        for (node_data v: copy.NMap.values()){
+            this.NMap.put(v.getId(),new Node(v));
+            if (copy.getEdges(v.getId())!=null)
+                for (edge_data e:copy.getEdges(v.getId()))
+                    add1Edge(e.getSrc(),e.getDst());
+        }
+        this.id = copy.id;
+        this.sizeE = copy.sizeE;
+    }
 
     public void addNode(){
         NMap.put(id,new Node(id));
         id++;
     }
     public void add2Edge(int src, int dst){
+        sizeE++;
         add1Edge(src,dst);
         add1Edge(dst,src);
     }
@@ -36,5 +49,21 @@ public class Graph {
 
     public int size() {
         return id;
+    }
+
+    public int getSizeE() {
+        return sizeE;
+    }
+    public boolean isLeaf(int id){
+        Collection<edge_data> temp = getEdges(id);
+        return temp == null || temp.size() == 1;
+    }
+    public node_data removeNode(int id){
+        node_data temp = NMap.remove(id);
+        EMap.remove(id);
+        for (HashMap<Integer, edge_data> lists : EMap.values()){
+            lists.remove(id);
+        }
+        return temp;
     }
 }
