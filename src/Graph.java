@@ -10,8 +10,10 @@ public class Graph {
     private int sizeE = 0;
     public Graph(){}
     public Graph(Graph copy){
+        for (node_data v: copy.NMap.values()) {
+            this.NMap.put(v.getId(), new Node(v));
+        }
         for (node_data v: copy.NMap.values()){
-            this.NMap.put(v.getId(),new Node(v));
             if (copy.getEdges(v.getId())!=null)
                 for (edge_data e:copy.getEdges(v.getId()))
                     add1Edge(e.getSrc(),e.getDst());
@@ -65,5 +67,17 @@ public class Graph {
             lists.remove(id);
         }
         return temp;
+    }
+
+    public int deg(int u) {
+        if(getEdges(u)==null) return 0;
+        return getEdges(u).size();
+    }
+
+    public void removeEdge(int u, int v) {
+        if (EMap.get(u) != null)
+            EMap.get(u).remove(v);
+        if (EMap.get(v) != null)
+            EMap.get(v).remove(u);
     }
 }
