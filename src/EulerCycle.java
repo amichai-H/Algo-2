@@ -21,12 +21,9 @@ public class EulerCycle {
                 int v = graph.getEdges(u).iterator().next().getDst();
                 s.push(v);
                 graph.removeEdge(u,v);
-
             }
-
         }
         return c;
-
     }
     private boolean isEuler() {
         return true;
@@ -44,6 +41,6 @@ public class EulerCycle {
         g.add2Edge(3,5);
         g.add2Edge(3,4);
         g.add2Edge(5,4);
-        System.out.println(new EulerCycle(g).findCycle().toString()); // [2, 5, 4, 3, 5, 1, 2, 3, 1]
+        System.out.println("Euler Circle: " + new EulerCycle(g).findCycle().toString()); // [2, 5, 4, 3, 5, 1, 2, 3, 1]
     }
 }
