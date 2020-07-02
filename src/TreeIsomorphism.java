@@ -1,42 +1,57 @@
 import java.util.LinkedList;
 import java.util.Queue;
-
+import java.util.PriorityQueue;
 public class TreeIsomorphism {
-    public static String toCode(int[] tree,int root){
+    class Node implements Comparable<Node>{
+        Integer length;
+        int index;
+        Node(int index,int length){
+            this.index = index;
+            this.length = length;
+        }
+
+        public void setLength(Integer length) {
+            this.length = length;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        @Override
+        public int compareTo(Node o) {
+            return o.length-length;
+        }
+    }
+
+    public String toCode(int[] tree, int root){
         String[] ans = new String[tree.length];
-        AHU(ans,tree,root);
+        AHU(ans,tree,root,null);
         return ans[root];
     }
-    public static void AHU(String[] phi,int [] tree,int v){
+    public void AHU(String[] phi, int[] tree, int v,PriorityQueue<Node> insert_me){
         if (isLeaf(tree,v)){
+            insert_me.add(new Node(v,2));
             phi[v] =  "10";
             return;
         }
         Queue<Integer> queue = new LinkedList<>();
+        PriorityQueue<Node> queue1 = new PriorityQueue<>();
         Queue<Integer> temp = new LinkedList<>();
         for (int i = 0; i<tree.length;i++){
             if (tree[i] == v) {
-                queue.add(i);
-                AHU(phi, tree, i);
+                queue.add(1);
+                AHU(phi, tree, i,queue1);
             }
         }
         phi[v] = "1";
-        while (!queue.isEmpty()) {
-            int max = queue.poll();
-            while (!queue.isEmpty()) {
-                int u = queue.poll();
-                if (phi[max].length() < phi[u].length()) {
-                    temp.add(max);
-                    max = u;
-                } else {
-                    temp.add(u);
-                }
-            }
-            queue = temp;
-            temp = new LinkedList<>();
+        while (!queue1.isEmpty()) {
+            int max = queue1.poll().getIndex();
             phi[v] = phi[v] + phi[max];
-        }//not the best sort could be better/
+        }//best sort
         phi[v] = phi[v] + "0";
+        if (insert_me!=null)
+            insert_me.add(new Node(v,phi[v].length()));
 
     }
 
@@ -47,14 +62,14 @@ public class TreeIsomorphism {
         }
         return true;
     }
-    public static boolean isomorphism(int[] tree1,int root1, int[] tree2,int root2){
+    public boolean isomorphism(int[] tree1, int root1, int[] tree2, int root2){
         return toCode(tree1,root1).equals(toCode(tree2,root2));
     }
     public static void main(String [] args){
         int[] i = {2,2,3,4,-1,4,4,6,6};
         int[] j = {1,8,1,5,5,6,-1,6,6};
-        System.out.println("111101000110100100".equals(toCode(i,4)));
-        System.out.println("the code is: " + toCode(i,4));
-        System.out.println(isomorphism(i,4,j,6));
+        System.out.println("111101000110100100".equals(new TreeIsomorphism().toCode(i,4)));
+        System.out.println("the code is: " + new TreeIsomorphism().toCode(i,4));
+        System.out.println(new TreeIsomorphism().isomorphism(i,4,j,6));
     }
 }
