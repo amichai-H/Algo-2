@@ -35,12 +35,9 @@ public class TreeIsomorphism {
             phi[v] =  "10";
             return;
         }
-        Queue<Integer> queue = new LinkedList<>();
         PriorityQueue<Node> queue1 = new PriorityQueue<>();
-        Queue<Integer> temp = new LinkedList<>();
         for (int i = 0; i<tree.length;i++){
             if (tree[i] == v) {
-                queue.add(1);
                 AHU(phi, tree, i,queue1);
             }
         }
